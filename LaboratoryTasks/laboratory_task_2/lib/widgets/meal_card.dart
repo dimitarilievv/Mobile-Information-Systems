@@ -4,8 +4,10 @@ import '../models/meal_model.dart';
 
 class MealCard extends StatelessWidget {
   final Meal meal;
+  final bool isFavorite;
+  final VoidCallback onToggleFavorite;
 
-  const MealCard({super.key, required this.meal});
+  const MealCard({super.key, required this.meal, required this.isFavorite, required this.onToggleFavorite});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +26,25 @@ class MealCard extends StatelessWidget {
             children: [
               Expanded(child: Image.network(meal.image)),
               Divider(),
-              Text(
-                meal.name,
-                style: TextStyle(fontSize: 16),
-                textAlign: TextAlign.center,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      meal.name,
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+
+                  IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.star : Icons.star_border,
+                      color: Colors.amber,
+                    ),
+                    onPressed: onToggleFavorite,
+                  ),
+                ],
               ),
             ],
           ),

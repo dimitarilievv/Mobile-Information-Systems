@@ -110,4 +110,22 @@ class ApiService {
     }
     return null;
   }
+  Future<Meal?> getMealById(String id) async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://www.themealdb.com/api/json/v1/1/lookup.php?i=$id'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final meals = data['meals'];
+        if (meals != null && meals.isNotEmpty) {
+          return Meal.fromJson(meals[0] as Map<String, dynamic>);
+        }
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
 }

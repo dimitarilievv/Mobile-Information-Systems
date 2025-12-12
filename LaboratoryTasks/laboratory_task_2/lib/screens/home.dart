@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/category_model.dart';
 import '../services/api_service.dart';
+import '../services/favorites_service.dart';
 import '../widgets/category_grid.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -20,7 +21,9 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _isSearching = false;
   String _searchQuery = '';
   final ApiService _apiService = ApiService();
+  final FavoritesService _favoritesService = FavoritesService();
   final TextEditingController _searchController = TextEditingController();
+
 
   @override
   void initState() {
@@ -41,17 +44,30 @@ class _MyHomePageState extends State<MyHomePage> {
               final api = ApiService();
               final randomMeal = await api.getRandomMeal();
 
-              if (randomMeal != null) {
+              if (randomMeal != null && mounted) {
                 Navigator.pushNamed(
                   context,
                   "/meal-details",
                   arguments: randomMeal.id,
                 );
-              } else {
+              } else if (mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Failed to load random meal")),
                 );
               }
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.star, color: Colors.amber),
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                "/favorites",
+                arguments: {
+                  "favoriteMeals": _favoritesService.favoriteMealIds,
+                  "onToggleFavorite": _favoritesService.toggleFavorite,
+                },
+              );
             },
           ),
         ],
